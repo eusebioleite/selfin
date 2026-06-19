@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+/* Rastreamento perfeito para Tailwind v4 processar os nós do Templ e Go */
+@source "./internal/**/*.templ";
+@source "./internal/**/*.go";
+
+@theme {
+  --color-wired-blue: #0070f3;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/resources/fonts/inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}

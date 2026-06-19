@@ -1,0 +1,27 @@
+version: '3'
+
+vars:
+  CSS_INPUT: "input.css"
+  CSS_OUTPUT: "resources/styles/login.css"
+
+tasks:
+  templ:
+    desc: "Gera os componentes Go a partir dos arquivos .templ"
+    cmds:
+      - templ generate
+
+  css:
+    desc: "Compila o CSS do Tailwind v4 em modo único de produção"
+    cmds:
+      - tailwindcss -i {{.CSS_INPUT}} -o {{.CSS_OUTPUT}}
+
+  build:
+    desc: "Compila os assets e gera o binário executável em Go com flags detalhadas"
+    cmds:
+      - go build -v .
+
+  run:
+    desc: "Executa o ambiente de desenvolvimento local compilando a árvore de views"
+    deps: [build, templ, css]
+    cmds:
+      - go run .
