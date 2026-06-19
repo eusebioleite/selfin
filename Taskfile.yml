@@ -25,3 +25,8 @@ tasks:
     deps: [build, templ, css]
     cmds:
       - go run .
+
+  db:
+    desc: "Recria o banco de dados"
+    cmds:
+      - sqlite3 selfin.db < models/schema.sql
