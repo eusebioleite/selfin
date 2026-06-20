@@ -1,53 +1,40 @@
 package views
 
 templ LoginPage() {
-    <!DOCTYPE html>
-    <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Login</title>
-        <script src="/resources/htmx.min.js"></script>
-        <link rel="stylesheet" href="/resources/styles/login.css" />
-        <style>
-            .htmx-indicator { display: none; }
-            .htmx-request .htmx-indicator { display: inline; }
-            .htmx-request .btn-text { display: none; }
-        </style>
-    </head>
-    <body class="bg-gray-950 text-gray-50 font-sans antialiased">
+	@BaseLayout("Login") {
+		<div class="flex items-center justify-center min-h-screen">
+			<div class="w-96 border border-border-subtle bg-bg-surface p-8 shadow-2xl rounded-xl">
+				<div class="text-center mb-8">
+					<h1 class="text-3xl font-bold text-wired-blue tracking-tight">Selfin</h1>
+					<p class="text-sm text-text-muted mt-2">Sign in to your account</p>
+				</div>
 
-        <div class="mx-auto my-12 w-80 border border-gray-800 bg-gray-900 p-6 shadow-xl rounded-lg">
-            <h2 class="text-2xl font-bold text-gray-100">Bem-vindo</h2>
-            <p class="text-sm text-gray-400 mt-1">Faça login para acessar o sistema</p>
+				<form hx-post="/login" hx-target="#login-response" hx-indicator="#submit-btn" class="space-y-5">
+					<div class="flex flex-col space-y-1.5">
+						<label for="login" class="text-sm font-medium text-text-primary">Username</label>
+						<input type="text" id="login" name="login" required autocomplete="username"
+							   class="w-full bg-bg-main border border-border-subtle rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-wired-blue focus:ring-1 focus:ring-wired-blue transition-all" />
+					</div>
 
-            <form hx-post="/login" hx-target="#login-response" hx-indicator="#submit-btn" class="mt-6 space-y-4">
-                <div class="flex flex-col space-y-1">
-                    <label for="login" class="text-sm font-medium text-gray-300">Login</label>
-                    <input type="text" id="login" name="login" required autocomplete="username"
-                           class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-gray-100 focus:outline-none focus:border-wired-blue transition-colors" />
-                </div>
+					<div class="flex flex-col space-y-1.5">
+						<label for="password" class="text-sm font-medium text-text-primary">Password</label>
+						<input type="password" id="password" name="password" required autocomplete="current-password"
+							   class="w-full bg-bg-main border border-border-subtle rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-wired-blue focus:ring-1 focus:ring-wired-blue transition-all" />
+					</div>
 
-                <div class="flex flex-col space-y-1">
-                    <label for="password" class="text-sm font-medium text-gray-300">Senha</label>
-                    <input type="password" id="password" name="password" required autocomplete="current-password"
-                           class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-gray-100 focus:outline-none focus:border-wired-blue transition-colors" />
-                </div>
+					<button type="submit" id="submit-btn"
+							class="w-full py-3 mt-2 bg-wired-blue hover:bg-opacity-90 text-bg-main font-semibold rounded-lg cursor-pointer transition-colors flex justify-center items-center min-h-[48px]">
+						<span class="btn-text">Sign In</span>
+						<span class="htmx-indicator animate-pulse">Authenticating...</span>
+					</button>
+				</form>
 
-                <button type="submit" id="submit-btn"
-                        class="w-full py-2.5 bg-wired-blue hover:bg-blue-600 text-white font-medium rounded cursor-pointer transition-colors flex justify-center items-center min-h-[42px]">
-                    <span class="btn-text">Entrar</span>
-                    <span class="htmx-indicator animate-pulse">Carregando...</span>
-                </button>
-            </form>
+				<div id="login-response" class="mt-4 text-sm font-medium text-red-400 text-center empty:hidden"></div>
 
-            <div id="login-response" class="mt-4 text-sm font-bold text-red-400"></div>
-
-            <div class="mt-4 text-center">
-                <a href="#" class="text-xs text-gray-400 hover:text-wired-blue transition-colors">Esqueceu sua senha?</a>
-            </div>
-        </div>
-
-    </body>
-    </html>
+				<div class="mt-6 text-center">
+					<a href="/forgot-password" class="text-sm text-text-muted hover:text-wired-blue transition-colors">Forgot your password?</a>
+				</div>
+			</div>
+		</div>
+	}
 }

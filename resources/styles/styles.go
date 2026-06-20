@@ -6,11 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//go:embed login.css
-var cssLogin []byte
+//go:embed main.css
+var cssMain []byte
 
-func GetCssLogin(c *gin.Context) {
+func GetCss(c *gin.Context) {
 	c.Header("Content-Type", "text/css; charset=utf-8")
 	c.Header("Cache-Control", "public, max-age=31536000")
-	c.Writer.Write(cssLogin)
+	c.Writer.Write(cssMain)
 }

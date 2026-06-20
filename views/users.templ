@@ -1,0 +1,99 @@
+package views
+
+import "github.com/eusebioleite/selfin/models"
+import "fmt"
+
+templ UserEnabledToggle(user models.User) {
+	<button class={ "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-wired-blue focus:ring-offset-2 focus:ring-offset-bg-main cursor-pointer", templ.KV("bg-wired-blue", user.Enabled), templ.KV("bg-border-subtle", !user.Enabled) }
+			hx-patch={ fmt.Sprintf("/users/%d/toggle", user.ID) }
+			hx-target={ fmt.Sprintf("#user-toggle-%d", user.ID) }
+			hx-swap="outerHTML"
+			id={ fmt.Sprintf("user-toggle-%d", user.ID) }>
+		<span class={ "inline-block h-4 w-4 transform rounded-full bg-white transition-transform", templ.KV("translate-x-6", user.Enabled), templ.KV("translate-x-1", !user.Enabled) }></span>
+	</button>
+}
+
+templ UserRow(user models.User) {
+	<tr class="border-b border-border-subtle hover:bg-bg-elevated transition-colors" id={ fmt.Sprintf("user-row-%d", user.ID) }>
+		<td class="py-4 px-6">
+			<div class="flex items-center gap-3">
+				<img src={ user.ImageURL } alt={ user.Name } class="w-10 h-10 rounded-full object-cover border border-border-subtle bg-bg-main" onerror="this.src='https://ui-avatars.com/api/?name=User&background=random'" />
+				<div>
+					<div class="text-sm font-medium text-text-primary">{ user.Name }</div>
+					<div class="text-xs text-text-muted">{ user.Login }</div>
+				</div>
+			</div>
+		</td>
+		<td class="py-4 px-6">
+			@UserEnabledToggle(user)
+		</td>
+	</tr>
+}
+
+templ UsersPage(users []models.User) {
+	@AppLayout("Users", "users") {
+		<div class="space-y-6">
+			<div>
+				<h2 class="text-2xl font-bold text-text-primary">Users</h2>
+				<p class="text-sm text-text-muted mt-1">Manage system users and access</p>
+			</div>
+
+			<!-- Add User Form -->
+			<div class="bg-bg-surface border border-border-subtle rounded-lg p-6 shadow-sm">
+				<h3 class="text-lg font-semibold text-text-primary mb-4">Add New User</h3>
+				<form hx-post="/users" hx-target="#users-list" hx-swap="beforeend" class="space-y-4"
+					  hx-on::after-request="if(event.detail.successful) this.reset()">
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div class="flex flex-col space-y-1.5">
+							<label for="name" class="text-sm font-medium text-text-primary">Name</label>
+							<input type="text" id="name" name="name" required
+								   class="w-full bg-bg-main border border-border-subtle rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-wired-blue focus:ring-1 focus:ring-wired-blue transition-all" />
+						</div>
+						<div class="flex flex-col space-y-1.5">
+							<label for="login" class="text-sm font-medium text-text-primary">Login</label>
+							<input type="text" id="login" name="login" required
+								   class="w-full bg-bg-main border border-border-subtle rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-wired-blue focus:ring-1 focus:ring-wired-blue transition-all" />
+						</div>
+						<div class="flex flex-col space-y-1.5">
+							<label for="password" class="text-sm font-medium text-text-primary">Password</label>
+							<input type="password" id="password" name="password" required
+								   class="w-full bg-bg-main border border-border-subtle rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-wired-blue focus:ring-1 focus:ring-wired-blue transition-all" />
+						</div>
+						<div class="flex flex-col space-y-1.5">
+							<label for="image_url" class="text-sm font-medium text-text-primary">Image URL</label>
+							<input type="url" id="image_url" name="image_url" required
+								   class="w-full bg-bg-main border border-border-subtle rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-wired-blue focus:ring-1 focus:ring-wired-blue transition-all" />
+						</div>
+					</div>
+					<div class="flex items-center gap-2 mt-2">
+						<input type="checkbox" id="enabled" name="enabled" value="true" checked class="w-4 h-4 rounded border-border-subtle bg-bg-main text-wired-blue focus:ring-wired-blue" />
+						<label for="enabled" class="text-sm text-text-primary">Account Enabled</label>
+					</div>
+					<div class="pt-2 flex justify-end">
+						<button type="submit"
+								class="py-2.5 px-6 bg-wired-blue hover:bg-opacity-90 text-bg-main font-semibold rounded-lg cursor-pointer transition-colors min-w-[150px]">
+							Create User
+						</button>
+					</div>
+				</form>
+			</div>
+
+			<!-- Users List -->
+			<div class="bg-bg-surface border border-border-subtle rounded-lg shadow-sm overflow-hidden">
+				<table class="w-full text-left border-collapse">
+					<thead>
+						<tr class="bg-bg-elevated border-b border-border-subtle">
+							<th class="py-3 px-6 text-xs font-medium text-text-muted uppercase tracking-wider">User</th>
+							<th class="py-3 px-6 text-xs font-medium text-text-muted uppercase tracking-wider w-32">Status</th>
+						</tr>
+					</thead>
+					<tbody id="users-list">
+						for _, user := range users {
+							@UserRow(user)
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	}
+}

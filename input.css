@@ -1,11 +1,16 @@
 @import "tailwindcss";
 
-/* Rastreamento perfeito para Tailwind v4 processar os nós do Templ e Go */
-@source "./internal/**/*.templ";
-@source "./internal/**/*.go";
+@source "./views/**/*.templ";
+@source "./pages/**/*.go";
 
 @theme {
   --color-wired-blue: #0070f3;
+  --color-bg-main: #080808;
+  --color-bg-surface: #121212;
+  --color-bg-elevated: #1c1c1c;
+  --color-border-subtle: #262626;
+  --color-text-primary: #e5e5e5;
+  --color-text-muted: #a3a3a3;
 }
 
 @font-face {
