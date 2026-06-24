@@ -1,97 +1,102 @@
 package controllers
 
 import (
-	"database/sql"
 	"net/http"
 	"strconv"
 
 	"github.com/eusebioleite/selfin/models"
+	repo "github.com/eusebioleite/selfin/repository"
 	"github.com/gin-gonic/gin"
 )
 
 // GetTransactions returns all transactions.
 func GetTransactions(c *gin.Context) {
-	rows, err := DB.Query("SELECT id, date, amount, description, category_id, user_id FROM transactions")
+	transactions, err := repo.GetTransactions()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	defer rows.Close()
 
-	var transactions []models.Transaction
-	for rows.Next() {
-		var t models.Transaction
-		if err := rows.Scan(&t.ID, &t.Date, &t.Amount, &t.Description, &t.CategoryID, &t.UserID); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		transactions = append(transactions, t)
-	}
 	c.JSON(http.StatusOK, transactions)
 }
 
-// GetTransaction returns a transaction by ID.
+// GetTransaction returns a transaction by id
 func GetTransaction(c *gin.Context) {
-	id := c.Param("id")
-	var t models.Transaction
-	err := DB.QueryRow("SELECT id, date, amount, description, category_id, user_id FROM transactions WHERE id = ?", id).
-		Scan(&t.ID, &t.Date, &t.Amount, &t.Description, &t.CategoryID, &t.UserID)
+	// 1. parses the id parameter to string
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			c.JSON(http.StatusNotFound, gin.H{"error": "transaction not found."})
-		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		}
+		c.JSON(http.StatusInternalServerError, gin.H{"info": "error converting parameter to int64.", "error": err})
 		return
 	}
-	c.JSON(http.StatusOK, t)
+
+	// 2. get transaction from database
+	transaction, err := repo.GetTransaction(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, transaction)
 }
 
 // CreateTransaction creates a new transaction.
 func CreateTransaction(c *gin.Context) {
-	var t models.Transaction
-	if err := c.ShouldBindJSON(&t); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 1. initializes a struct with data from payload
+	var transaction models.Transaction
+	if err := c.ShouldBindJSON(&transaction); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"info": "error binding payload to struct", "error": err.Error()})
 		return
 	}
 
-	res, err := DB.Exec("INSERT INTO transactions (date, amount, description, category_id, user_id) VALUES (?, ?, ?, ?, ?)",
-		t.Date, t.Amount, t.Description, t.CategoryID, t.UserID)
+	// 2. creates a new transaction
+	err := repo.NewTransaction(&transaction)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	id, _ := res.LastInsertId()
-	t.ID = id
-	c.JSON(http.StatusCreated, t)
+	c.JSON(http.StatusCreated, transaction)
 }
 
 // UpdateTransaction updates a transaction.
 func UpdateTransaction(c *gin.Context) {
-	id := c.Param("id")
-	var t models.Transaction
-	if err := c.ShouldBindJSON(&t); err != nil {
+	// 1. parses the id parameter to string
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"info": "error converting parameter to int64.", "error": err})
+		return
+	}
+
+	// 2. initializes a struct with data from payload
+	var transaction models.Transaction
+	if err := c.ShouldBindJSON(&transaction); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	_, err := DB.Exec("UPDATE transactions SET date = ?, amount = ?, description = ?, category_id = ?, user_id = ? WHERE id = ?",
-		t.Date, t.Amount, t.Description, t.CategoryID, t.UserID, id)
+	// 3. updates a transaction
+	transaction.ID = id
+	err = repo.UpdateTransaction(&transaction)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+
 	}
 
-	idInt, _ := strconv.ParseInt(id, 10, 64)
-	t.ID = idInt
-	c.JSON(http.StatusOK, t)
+	c.JSON(http.StatusOK, transaction)
 }
 
 // DeleteTransaction deletes a transaction.
 func DeleteTransaction(c *gin.Context) {
-	id := c.Param("id")
-	_, err := DB.Exec("DELETE FROM transactions WHERE id = ?", id)
+	// 1. parses the id parameter to string
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error converting parameter to int64.", "log": err})
+		return
+	}
+
+	// 2. deletes the transaction
+	err = repo.DeleteTransaction(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

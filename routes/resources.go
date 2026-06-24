@@ -12,6 +12,6 @@ func setupResources(r *gin.Engine) {
 	{
 		resource.GET("/htmx.min.js", js.GetHtmx)
 		resource.GET("/fonts/inter.woff2", fonts.GetFontInter)
-		resource.GET("/styles/login.css", styles.GetCss)
+		resource.GET("/styles/main.css", styles.GetCss)
 	}
 }

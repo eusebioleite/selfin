@@ -1,97 +1,102 @@
 package controllers
 
 import (
-	"database/sql"
 	"net/http"
 	"strconv"
 
 	"github.com/eusebioleite/selfin/models"
+	repo "github.com/eusebioleite/selfin/repository"
 	"github.com/gin-gonic/gin"
 )
 
-// GetUsers returns all users.
+// GetUsers returns a json with users
 func GetUsers(c *gin.Context) {
-	rows, err := DB.Query("SELECT id, name, login, password, image_url, enabled FROM users")
+	users, err := repo.GetUsers()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	defer rows.Close()
 
-	var users []models.User
-	for rows.Next() {
-		var u models.User
-		if err := rows.Scan(&u.ID, &u.Name, &u.Login, &u.Password, &u.ImageURL, &u.Enabled); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		users = append(users, u)
-	}
 	c.JSON(http.StatusOK, users)
 }
 
-// GetUser returns a user by ID.
+// GetUser returns a user by id
 func GetUser(c *gin.Context) {
-	id := c.Param("id")
-	var u models.User
-	err := DB.QueryRow("SELECT id, name, login, password, image_url, enabled FROM users WHERE id = ?", id).
-		Scan(&u.ID, &u.Name, &u.Login, &u.Password, &u.ImageURL, &u.Enabled)
+	// 1. parses the id parameter to string
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			c.JSON(http.StatusNotFound, gin.H{"error": "user not found."})
-		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		}
+		c.JSON(http.StatusInternalServerError, gin.H{"info": "error converting parameter to int64.", "error": err})
 		return
 	}
-	c.JSON(http.StatusOK, u)
+
+	// 2. get user from database
+	user, err := repo.GetUser(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
 }
 
 // CreateUser creates a new user.
 func CreateUser(c *gin.Context) {
-	var u models.User
-	if err := c.ShouldBindJSON(&u); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 1. initializes a struct with data from payload
+	var user models.User
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"info": "error binding payload to struct", "error": err.Error()})
 		return
 	}
 
-	res, err := DB.Exec("INSERT INTO users (name, login, password, image_url, enabled) VALUES (?, ?, ?, ?, ?)",
-		u.Name, u.Login, u.Password, u.ImageURL, u.Enabled)
+	// 2. creates a new user
+	err := repo.NewUser(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	id, _ := res.LastInsertId()
-	u.ID = id
-	c.JSON(http.StatusCreated, u)
+	c.JSON(http.StatusCreated, user)
 }
 
 // UpdateUser updates a user.
 func UpdateUser(c *gin.Context) {
-	id := c.Param("id")
-	var u models.User
-	if err := c.ShouldBindJSON(&u); err != nil {
+	// 1. parses the id parameter to string
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"info": "error converting parameter to int64.", "error": err})
+		return
+	}
+
+	// 2. initializes a struct with data from payload
+	var user models.User
+	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	_, err := DB.Exec("UPDATE users SET name = ?, login = ?, password = ?, image_url = ?, enabled = ? WHERE id = ?",
-		u.Name, u.Login, u.Password, u.ImageURL, u.Enabled, id)
+	// 3. updates a user
+	user.ID = id
+	err = repo.UpdateUser(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+
 	}
 
-	idInt, _ := strconv.ParseInt(id, 10, 64)
-	u.ID = idInt
-	c.JSON(http.StatusOK, u)
+	c.JSON(http.StatusOK, user)
 }
 
 // DeleteUser deletes a user.
 func DeleteUser(c *gin.Context) {
-	id := c.Param("id")
-	_, err := DB.Exec("DELETE FROM users WHERE id = ?", id)
+	// 1. parses the id parameter to string
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error converting parameter to int64.", "log": err})
+		return
+	}
+
+	// 2. deletes the user
+	err = repo.DeleteUser(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

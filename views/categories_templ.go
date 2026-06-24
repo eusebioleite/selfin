@@ -138,23 +138,71 @@ func CategoriesPage(categories []models.Category) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"space-y-6\"><div><h2 class=\"text-2xl font-bold text-text-primary\">Categories</h2><p class=\"text-sm text-text-muted mt-1\">Manage your transaction categories</p></div><!-- Add Category Form --><div class=\"bg-bg-surface border border-border-subtle rounded-lg p-6 shadow-sm\"><h3 class=\"text-lg font-semibold text-text-primary mb-4\">Add New Category</h3><form hx-post=\"/categories\" hx-target=\"#categories-list\" hx-swap=\"beforeend\" class=\"flex gap-4 items-end\" hx-on::after-request=\"if(event.detail.successful) this.reset()\"><div class=\"flex-1 flex flex-col space-y-1.5\"><label for=\"description\" class=\"text-sm font-medium text-text-primary\">Description</label> <input type=\"text\" id=\"description\" name=\"description\" required class=\"w-full bg-bg-main border border-border-subtle rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-wired-blue focus:ring-1 focus:ring-wired-blue transition-all\" placeholder=\"e.g. Groceries\"></div><button type=\"submit\" class=\"py-2.5 px-6 bg-wired-blue hover:bg-opacity-90 text-bg-main font-semibold rounded-lg cursor-pointer transition-colors min-h-[46px]\">Add Category</button></form></div><!-- Categories List --><div class=\"bg-bg-surface border border-border-subtle rounded-lg shadow-sm overflow-hidden\"><table class=\"w-full text-left border-collapse\"><thead><tr class=\"bg-bg-elevated border-b border-border-subtle\"><th class=\"py-3 px-6 text-xs font-medium text-text-muted uppercase tracking-wider w-24\">ID</th><th class=\"py-3 px-6 text-xs font-medium text-text-muted uppercase tracking-wider\">Description</th><th class=\"py-3 px-6 text-xs font-medium text-text-muted uppercase tracking-wider text-right w-32\">Actions</th></tr></thead> <tbody id=\"categories-list\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<!-- Add Category Form --> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			for _, cat := range categories {
-				templ_7745c5c3_Err = CategoryRow(cat).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Var9 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+				templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+				templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+				if !templ_7745c5c3_IsBuffer {
+					defer func() {
+						templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+						if templ_7745c5c3_Err == nil {
+							templ_7745c5c3_Err = templ_7745c5c3_BufErr
+						}
+					}()
+				}
+				ctx = templ.InitializeContext(ctx)
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<form hx-post=\"/categories\" hx-target=\"#categories-list\" hx-swap=\"beforeend\" class=\"flex gap-4 items-end\" hx-on::after-request=\"if(event.detail.successful) this.reset()\"><div class=\"flex-1 flex flex-col space-y-1.5\"><label for=\"description\" class=\"text-sm font-medium text-text-primary\">Description</label> <input type=\"text\" id=\"description\" name=\"description\" required class=\"w-full bg-bg-main border border-border-subtle rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-wired-blue focus:ring-1 focus:ring-wired-blue transition-all\" placeholder=\"e.g. Groceries\"></div><button type=\"submit\" class=\"py-2.5 px-6 bg-wired-blue hover:bg-opacity-90 text-bg-main font-semibold rounded-lg cursor-pointer transition-colors min-h-[46px]\">Add Category</button></form>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
+				return nil
+			})
+			templ_7745c5c3_Err = CrudFormCard("Add New Category").Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</tbody></table></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, " <!-- Categories List --> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Var10 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+				templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+				templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+				if !templ_7745c5c3_IsBuffer {
+					defer func() {
+						templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+						if templ_7745c5c3_Err == nil {
+							templ_7745c5c3_Err = templ_7745c5c3_BufErr
+						}
+					}()
+				}
+				ctx = templ.InitializeContext(ctx)
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<table class=\"w-full text-left border-collapse\"><thead><tr class=\"bg-bg-elevated border-b border-border-subtle\"><th class=\"py-3 px-6 text-xs font-medium text-text-muted uppercase tracking-wider w-24\">ID</th><th class=\"py-3 px-6 text-xs font-medium text-text-muted uppercase tracking-wider\">Description</th><th class=\"py-3 px-6 text-xs font-medium text-text-muted uppercase tracking-wider text-right w-32\">Actions</th></tr></thead> <tbody id=\"categories-list\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				for _, cat := range categories {
+					templ_7745c5c3_Err = CategoryRow(cat).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</tbody></table>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				return nil
+			})
+			templ_7745c5c3_Err = CrudListCard().Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = AppLayout("Categories", "categories").Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = CrudPage("Categories", "categories", "Categories", "Manage your transaction categories").Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

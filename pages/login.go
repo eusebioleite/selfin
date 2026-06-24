@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/eusebioleite/selfin/controllers"
+	"github.com/eusebioleite/selfin/database"
 	"github.com/eusebioleite/selfin/views"
 	"github.com/gin-gonic/gin"
 )
@@ -19,8 +19,8 @@ func PostLogin(c *gin.Context) {
 	password := c.PostForm("password")
 
 	var id int64
-	err := controllers.DB.QueryRow("SELECT id FROM users WHERE login = ? AND password = ? AND enabled = 1", login, password).Scan(&id)
-	
+	err := database.DB.QueryRow("SELECT id FROM users WHERE login = ? AND password = ? AND enabled = 1", login, password).Scan(&id)
+
 	if err != nil {
 		if err == sql.ErrNoRows {
 			c.String(http.StatusOK, `Invalid credentials or account disabled.`)

@@ -12,8 +12,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/eusebioleite/selfin/controllers"
-	"github.com/eusebioleite/selfin/logger"
+	"github.com/eusebioleite/selfin/database"
+	logger "github.com/eusebioleite/selfin/log"
 	"github.com/eusebioleite/selfin/routes"
 	_ "github.com/eusebioleite/selfin/views"
 	"github.com/joho/godotenv"
@@ -54,7 +54,7 @@ func main() {
 		log.Fatal().Err(err).Msg("Connection error.")
 	}
 
-	controllers.InitDB(db)
+	database.InitDB(db)
 
 	// 5. setup gin routes
 	r := routes.SetupRouter()

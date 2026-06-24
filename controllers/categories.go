@@ -5,85 +5,98 @@ import (
 	"strconv"
 
 	"github.com/eusebioleite/selfin/models"
+	repo "github.com/eusebioleite/selfin/repository"
 	"github.com/gin-gonic/gin"
 )
 
-// GetCategories returns all categories.
+// GetCategories returns a json with categories
 func GetCategories(c *gin.Context) {
-	rows, err := DB.Query("SELECT id, description FROM categories")
+	categories, err := repo.GetCategories()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	defer rows.Close()
 
-	var categories []models.Category
-	for rows.Next() {
-		var g models.Category
-		if err := rows.Scan(&g.ID, &g.Description); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		categories = append(categories, g)
-	}
 	c.JSON(http.StatusOK, categories)
 }
 
-// GetCategory returns a category by ID.
+// GetCategory returns a category by id
 func GetCategory(c *gin.Context) {
-	id := c.Param("id")
-	var g models.Category
-	err := DB.QueryRow("SELECT id, description FROM categories WHERE id = ?", id).Scan(&g.ID, &g.Description)
+	// 1. parses the id parameter to string
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "category not found."})
+		c.JSON(http.StatusInternalServerError, gin.H{"info": "error converting parameter to int64.", "error": err})
 		return
 	}
-	c.JSON(http.StatusOK, g)
+
+	// 2. get category from database
+	category, err := repo.GetCategory(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, category)
 }
 
 // CreateCategory creates a new category.
 func CreateCategory(c *gin.Context) {
-	var g models.Category
-	if err := c.ShouldBindJSON(&g); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 1. initializes a struct with data from payload
+	var category models.Category
+	if err := c.ShouldBindJSON(&category); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"info": "error binding payload to struct", "error": err.Error()})
 		return
 	}
 
-	res, err := DB.Exec("INSERT INTO categories (description) VALUES (?)", g.Description)
+	// 2. creates a new category
+	err := repo.NewCategory(&category)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	id, _ := res.LastInsertId()
-	g.ID = id
-	c.JSON(http.StatusCreated, g)
+	c.JSON(http.StatusCreated, category)
 }
 
 // UpdateCategory updates a category.
 func UpdateCategory(c *gin.Context) {
-	id := c.Param("id")
-	var g models.Category
-	if err := c.ShouldBindJSON(&g); err != nil {
+	// 1. parses the id parameter to string
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"info": "error converting parameter to int64.", "error": err})
+		return
+	}
+
+	// 2. initializes a struct with data from payload
+	var category models.Category
+	if err := c.ShouldBindJSON(&category); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	_, err := DB.Exec("UPDATE categories SET description = ? WHERE id = ?", g.Description, id)
+	// 3. updates a category
+	category.ID = id
+	err = repo.UpdateCategory(&category)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+
 	}
 
-	idInt, _ := strconv.ParseInt(id, 10, 64)
-	g.ID = idInt
-	c.JSON(http.StatusOK, g)
+	c.JSON(http.StatusOK, category)
 }
 
 // DeleteCategory deletes a category.
 func DeleteCategory(c *gin.Context) {
-	id := c.Param("id")
-	_, err := DB.Exec("DELETE FROM categories WHERE id = ?", id)
+	// 1. parses the id parameter to string
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error converting parameter to int64.", "log": err})
+		return
+	}
+
+	// 2. deletes the category
+	err = repo.DeleteCategory(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

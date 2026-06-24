@@ -42,7 +42,7 @@ func BaseLayout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</title><script src=\"/resources/htmx.min.js\"></script><link rel=\"stylesheet\" href=\"/resources/styles/login.css?v=2\"><style>\n\t\t\t.htmx-indicator { display: none; }\n\t\t\t.htmx-request .htmx-indicator { display: inline; }\n\t\t\t.htmx-request .btn-text { display: none; }\n\t\t</style></head><body class=\"bg-bg-main text-text-primary font-sans antialiased min-h-screen\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</title><script src=\"/resources/htmx.min.js\"></script><link rel=\"stylesheet\" href=\"/resources/styles/main.css\"><style>\n\t\t\t.htmx-indicator { display: none; }\n\t\t\t.htmx-request .htmx-indicator { display: inline; }\n\t\t\t.htmx-request .btn-text { display: none; }\n\t\t</style></head><body class=\"bg-bg-main text-text-primary font-sans antialiased min-h-screen\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

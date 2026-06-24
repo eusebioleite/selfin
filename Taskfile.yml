@@ -2,7 +2,7 @@ version: '3'
 
 vars:
   CSS_INPUT: "input.css"
-  CSS_OUTPUT: "resources/styles/login.css"
+  CSS_OUTPUT: "resources/styles/main.css"
 
 tasks:
   templ:
@@ -21,7 +21,7 @@ tasks:
       - go build -v .
 
   run:
-    desc: "Executa o ambiente de desenvolvimento local compilando a árvore de views"
+    desc: "Executa o ambiente de desenvolvimento local (uma única vez)"
     deps: [build, templ, css]
     cmds:
       - go run .
@@ -29,4 +29,20 @@ tasks:
   db:
     desc: "Recria o banco de dados"
     cmds:
+      - rm selfin.db
       - sqlite3 selfin.db < models/schema.sql
+      - sqlite3 selfin.db < models/data.sql
+
+  dev:css:
+    desc: "Observa e compila o CSS continuamente"
+    cmds:
+      - tailwindcss -i {{.CSS_INPUT}} -o {{.CSS_OUTPUT}} --watch
+
+  dev:templ:
+    desc: "Observa os arquivos .templ e reinicia o servidor Go automaticamente"
+    cmds:
+      - templ generate --watch --cmd="go run ." --proxy="http://localhost:9665"
+
+  dev:
+    desc: "Inicia o ambiente de desenvolvimento com Live Reload (Tailwind + Templ + Go Server)"
+    deps: [dev:css, dev:templ]

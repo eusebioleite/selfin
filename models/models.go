@@ -5,8 +5,6 @@ type User struct {
 	Name     string `json:"name"`
 	Login    string `json:"login"`
 	Password string `json:"password"`
-	ImageURL string `json:"image_url"`
-	Enabled  bool   `json:"enabled"`
 }
 
 type Category struct {

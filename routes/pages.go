@@ -8,12 +8,11 @@ import (
 )
 
 func setupPages(r *gin.Engine) {
-	// Root redirect
+
 	r.GET("/", func(c *gin.Context) {
 		c.Redirect(http.StatusFound, "/dashboard")
 	})
 
-	// Public routes
 	public := r.Group("/")
 	{
 		public.GET("/login", pages.GetLogin)
@@ -21,20 +20,18 @@ func setupPages(r *gin.Engine) {
 		public.GET("/forgot-password", pages.GetForgotPassword)
 	}
 
-	// Authenticated routes
 	protected := r.Group("/")
 	protected.Use(AuthMiddleware())
 	{
 		protected.POST("/logout", pages.PostLogout)
-		
+
 		protected.GET("/dashboard", pages.GetDashboard)
-		
+
 		protected.GET("/categories", pages.GetCategories)
 		protected.POST("/categories", pages.PostCategory)
 		protected.DELETE("/categories/:id", pages.DeleteCategory)
-		
+
 		protected.GET("/users", pages.GetUsers)
 		protected.POST("/users", pages.PostUser)
-		protected.PATCH("/users/:id/toggle", pages.ToggleUser)
 	}
 }
