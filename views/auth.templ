@@ -1,0 +1,21 @@
+package views
+
+import "github.com/eusebioleite/selfin/views/base"
+
+templ Auth() {
+	@base.App(base.Content(authContent()))
+}
+
+templ authContent() {
+	<form
+		hx-post="/auth"
+		hx-ext="json-enc"
+		id="formAuth"
+	>
+		<label for="tbUsuario">Usuário: </label>
+		<input type="text" name="login" id="tbUsuario" placeholder="Usuário..."/>
+		<label for="tbSenha">Senha: </label>
+		<input type="password" name="password" id="tbSenha" autocomplete="current-password" placeholder="Senha..."/>
+		<button id="btnAuth">Entrar</button>
+	</form>
+}

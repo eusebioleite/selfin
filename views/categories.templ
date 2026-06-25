@@ -1,58 +1,30 @@
 package views
 
-import "github.com/eusebioleite/selfin/models"
-import "fmt"
+import (
+	"fmt"
+	"github.com/eusebioleite/selfin/models"
+	"github.com/eusebioleite/selfin/views/base"
+)
 
-templ CategoryRow(cat models.Category) {
-	<tr class="border-b border-border-subtle hover:bg-bg-elevated transition-colors" id={ fmt.Sprintf("category-row-%d", cat.ID) }>
-		<td class="py-4 px-6 text-sm text-text-primary">{ fmt.Sprintf("%d", cat.ID) }</td>
-		<td class="py-4 px-6 text-sm text-text-primary font-medium">{ cat.Description }</td>
-		<td class="py-4 px-6 text-sm text-right">
-			<button class="text-red-400 hover:text-red-300 font-medium cursor-pointer"
-					hx-delete={ fmt.Sprintf("/categories/%d", cat.ID) }
-					hx-target={ fmt.Sprintf("#category-row-%d", cat.ID) }
-					hx-swap="outerHTML">
-				Delete
-			</button>
-		</td>
-	</tr>
+templ Categories(categories []models.Category) {
+	@base.App(base.Content(categoriesContent(categories)))
 }
 
-templ CategoriesPage(categories []models.Category) {
-	@CrudPage("Categories", "categories", "Categories", "Manage your transaction categories") {
-		<!-- Add Category Form -->
-		@CrudFormCard("Add New Category") {
-			<form hx-post="/categories" hx-target="#categories-list" hx-swap="beforeend" class="flex gap-4 items-end"
-				  hx-on::after-request="if(event.detail.successful) this.reset()">
-				<div class="flex-1 flex flex-col space-y-1.5">
-					<label for="description" class="text-sm font-medium text-text-primary">Description</label>
-					<input type="text" id="description" name="description" required
-						   class="w-full bg-bg-main border border-border-subtle rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-wired-blue focus:ring-1 focus:ring-wired-blue transition-all" 
-						   placeholder="e.g. Groceries" />
-				</div>
-				<button type="submit"
-						class="py-2.5 px-6 bg-wired-blue hover:bg-opacity-90 text-bg-main font-semibold rounded-lg cursor-pointer transition-colors min-h-[46px]">
-					Add Category
-				</button>
-			</form>
-		}
-
-		<!-- Categories List -->
-		@CrudListCard() {
-			<table class="w-full text-left border-collapse">
-				<thead>
-					<tr class="bg-bg-elevated border-b border-border-subtle">
-						<th class="py-3 px-6 text-xs font-medium text-text-muted uppercase tracking-wider w-24">ID</th>
-						<th class="py-3 px-6 text-xs font-medium text-text-muted uppercase tracking-wider">Description</th>
-						<th class="py-3 px-6 text-xs font-medium text-text-muted uppercase tracking-wider text-right w-32">Actions</th>
-					</tr>
-				</thead>
-				<tbody id="categories-list">
-					for _, cat := range categories {
-						@CategoryRow(cat)
-					}
-				</tbody>
-			</table>
-		}
-	}
+templ categoriesContent(categories []models.Category) {
+	<table id="tableCategories">
+		<thead id="theadCategories">
+			<tr>
+				<th id="thID">ID</th>
+				<th id="thDescription">Description</th>
+			</tr>
+		</thead>
+		<tbody id="tbodyCategories">
+			for i, category := range categories {
+				<tr id={ fmt.Sprintf("tr%d", i) }>
+					<td id="tdID">{ category.ID }</td>
+					<td id="tdDescription">{ category.Description }</td>
+				</tr>
+			}
+		</tbody>
+	</table>
 }

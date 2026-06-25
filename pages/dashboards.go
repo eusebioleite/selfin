@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetDashboard(c *gin.Context) {
+func GetDashboards(c *gin.Context) {
 	c.Header("Content-Type", "text/html; charset=utf-8")
-	views.DashboardPage().Render(c.Request.Context(), c.Writer)
+	views.Dashboards().Render(c.Request.Context(), c.Writer)
 }

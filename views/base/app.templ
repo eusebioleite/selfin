@@ -1,0 +1,18 @@
+package base
+
+templ App(content templ.Component) {
+	<!DOCTYPE html>
+	<html>
+		<head title="Selfin">
+			<script src="/resources/htmx.min.js"></script>
+			<script src="/resources/json-enc.js"></script>
+			<link rel="stylesheet" href="/resources/styles/main.css"/>
+		</head>
+		<body>
+			<div style="display: flex;">
+				@Menu()
+				@content
+			</div>
+		</body>
+	</html>
+}

@@ -17,6 +17,23 @@ type Transaction struct {
 	Date        string  `json:"date"`
 	Amount      float64 `json:"amount"`
 	Description string  `json:"description"`
+	Type        string  `json:"type"`
 	CategoryID  int64   `json:"category_id"`
 	UserID      int64   `json:"user_id"`
+}
+
+type Session struct {
+	ID        string `json:"id"`
+	UserID    int64  `json:"user_id"`
+	ExpiresAt string `json:"expires_at"`
+	CreatedAt string `json:"created_at"`
+}
+
+type UserSession struct {
+	UserID    int64  `json:"user_id"`
+	Login     string `json:"login"`
+	Password  string `json:"password"`
+	SessionID string `json:"session_id"`
+	ExpiresAt string `json:"expires_at"`
+	CreatedAt string `json:"created_at"`
 }

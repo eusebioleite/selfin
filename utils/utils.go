@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"database/sql"
 	"errors"
 
 	"github.com/ncruces/go-sqlite3"
@@ -14,9 +13,4 @@ func IsConstraintViolation(err error) bool {
 	} else {
 		return false
 	}
-}
-
-func HasRowsAffected(res sql.Result) bool {
-	rows, _ := res.RowsAffected()
-	return rows == 0
 }

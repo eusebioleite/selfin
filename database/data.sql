@@ -1,6 +1,6 @@
 insert into users (
 	name,login,password
-) values ( 'admin','admin','admin' );
+) values ( 'admin','admin','uslTqIF0MsH1xrPRUuv7Zw.7T4nY+mGEaqgdpJS1op8Z4TWfif6hEXPHRHy2kpQHXM' );
 insert into categories ( description ) values ( 'Outros' );
 
 insert into categories ( description ) values ( 'Receitas' );

@@ -1,32 +1,20 @@
 package pages
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/eusebioleite/selfin/database"
-	"github.com/eusebioleite/selfin/models"
+	"github.com/eusebioleite/selfin/repository"
 	"github.com/eusebioleite/selfin/views"
 	"github.com/gin-gonic/gin"
 )
 
 func GetCategories(c *gin.Context) {
-	rows, err := database.DB.Query("SELECT id, description FROM categories ORDER BY id DESC")
+	c.Header("Content-Type", "text/html; charset=utf-8")
+	categories, err := repository.GetCategories()
 	if err != nil {
-		c.String(http.StatusInternalServerError, "Error loading categories")
+		c.AbortWithError(http.StatusNotFound, fmt.Errorf("Error loading categories table: %w", err))
 		return
 	}
-	defer rows.Close()
-
-	var categories []models.Category
-	for rows.Next() {
-		var cat models.Category
-		if err := rows.Scan(&cat.ID, &cat.Description); err != nil {
-			c.String(http.StatusInternalServerError, "Error parsing categories")
-			return
-		}
-		categories = append(categories, cat)
-	}
-
-	c.Header("Content-Type", "text/html; charset=utf-8")
-	views.CategoriesPage(categories).Render(c.Request.Context(), c.Writer)
+	views.Categories(categories).Render(c.Request.Context(), c.Writer)
 }
