@@ -38,11 +38,23 @@ tasks:
     cmds:
       - tailwindcss -i {{.CSS_INPUT}} -o {{.CSS_OUTPUT}} --watch
 
+  dev:server:
+    desc: "Compila CSS e inicia o servidor Go (usado pelo watch do templ)"
+    env:
+      DEV: "1"
+    cmds:
+      - tailwindcss -i {{.CSS_INPUT}} -o {{.CSS_OUTPUT}}
+      - go run .
+
   dev:templ:
     desc: "Observa os arquivos .templ e reinicia o servidor Go automaticamente"
+    env:
+      DEV: "1"
     cmds:
-      - templ generate --watch --cmd="go run ." --proxy="http://localhost:9665"
+      - templ generate --watch --cmd="task dev:server" --proxy="http://localhost:9665"
 
   dev:
     desc: "Inicia o ambiente de desenvolvimento com Live Reload (Tailwind + Templ + Go Server)"
+    env:
+      DEV: "1"
     deps: [dev:css, dev:templ]

@@ -2,6 +2,7 @@ package routes
 
 import (
 	fonts "github.com/eusebioleite/selfin/resources/fonts"
+	"github.com/eusebioleite/selfin/resources/img"
 	js "github.com/eusebioleite/selfin/resources/js"
 	styles "github.com/eusebioleite/selfin/resources/styles"
 	"github.com/gin-gonic/gin"
@@ -14,5 +15,6 @@ func setupResources(r *gin.Engine) {
 		resource.GET("/json-enc.js", js.GetJsonEncJS)
 		resource.GET("/fonts/inter.woff2", fonts.GetFontInter)
 		resource.GET("/styles/main.css", styles.GetCss)
+		resource.GET("/img/output.png", img.GetLogo)
 	}
 }

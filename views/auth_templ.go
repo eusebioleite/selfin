@@ -8,8 +8,6 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/eusebioleite/selfin/views/base"
-
 func Auth() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -31,36 +29,7 @@ func Auth() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = base.App(base.Content(authContent())).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		return nil
-	})
-}
-
-func authContent() templ.Component {
-	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
-		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
-		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
-			return templ_7745c5c3_CtxErr
-		}
-		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
-		if !templ_7745c5c3_IsBuffer {
-			defer func() {
-				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err == nil {
-					templ_7745c5c3_Err = templ_7745c5c3_BufErr
-				}
-			}()
-		}
-		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var2 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var2 == nil {
-			templ_7745c5c3_Var2 = templ.NopComponent
-		}
-		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<form hx-post=\"/auth\" hx-ext=\"json-enc\" id=\"formAuth\"><label for=\"tbUsuario\">Usuário: </label> <input type=\"text\" name=\"login\" id=\"tbUsuario\" placeholder=\"Usuário...\"> <label for=\"tbSenha\">Senha: </label> <input type=\"password\" name=\"password\" id=\"tbSenha\" autocomplete=\"current-password\" placeholder=\"Senha...\"> <button id=\"btnAuth\">Entrar</button></form>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"pt-BR\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Selfin</title><script src=\"/resources/htmx.min.js\"></script><script src=\"/resources/json-enc.js\"></script><link rel=\"stylesheet\" href=\"/resources/styles/main.css\"></head><body class=\"w-screen h-screen flex justify-center items-center bg-neutral-950 p-4\"><form class=\"flex flex-col justify-center items-start w-full max-w-md p-6 bg-neutral-900 rounded-sm antialiased border border-neutral-800 shadow-2xl\" hx-post=\"/auth\" hx-ext=\"json-enc\" id=\"formAuth\"><div class=\"w-full flex justify-center items-center mb-6\"><img src=\"/resources/img/output.png\" alt=\"Logo\" class=\"w-40 h-auto object-contain\"></div><div class=\"relative w-full mb-6 group\"><input type=\"text\" name=\"login\" id=\"tbUsuario\" placeholder=\" \" required class=\"peer w-full text-xs font-bold bg-neutral-800 text-neutral-200 pl-3 pt-5 pb-2 border border-neutral-700 rounded-sm focus:outline-none focus:border-neutral-500 transition-all placeholder-transparent\"> <label for=\"tbUsuario\" class=\"absolute left-3 top-3.5 text-xs text-neutral-500 italic antialiased pointer-events-none transition-all duration-200 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-neutral-400 peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:text-neutral-400\">USER</label></div><div class=\"relative w-full mb-8 group\"><input type=\"password\" name=\"password\" id=\"tbSenha\" placeholder=\" \" required autocomplete=\"current-password\" class=\"peer w-full text-xs bg-neutral-800 text-neutral-200 pl-3 pt-5 pb-2 border border-neutral-700 rounded-sm focus:outline-none focus:border-neutral-500 transition-all placeholder-transparent\"> <label for=\"tbSenha\" class=\"absolute left-3 top-3.5 text-xs text-neutral-500 italic antialiased pointer-events-none transition-all duration-200 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-neutral-400 peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:text-neutral-400\">PASSWORD</label> <a href=\"/recovery\" class=\"pt-10 text-xs text-neutral-500 hover:text-[#f8c857] active:text-neutral-400 italic antialiased transition-colors duration-150 ease-in-out\">Forgot your password?</a></div><button type=\"submit\" class=\"w-full text-lg font-semibold text-neutral-950 py-3 bg-[#f8c857] hover:bg-[#e0b44c] active:scale-[0.98] border border-transparent rounded-sm transition-all duration-150 cursor-pointer\" id=\"btnAuth\">Log In</button></form></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

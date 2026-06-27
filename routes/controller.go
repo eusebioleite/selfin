@@ -8,21 +8,18 @@ import (
 func setupApi(r *gin.Engine) {
 	api := r.Group("/api/v1")
 	{
-		// users
 		api.GET("/users", controllers.GetUsers)
 		api.GET("/users/:id", controllers.GetUser)
 		api.POST("/users", controllers.CreateUser)
 		api.PUT("/users/:id", controllers.UpdateUser)
 		api.DELETE("/users/:id", controllers.DeleteUser)
 
-		// categories
 		api.GET("/categories", controllers.GetCategories)
 		api.GET("/categories/:id", controllers.GetCategory)
 		api.POST("/categories", controllers.CreateCategory)
 		api.PUT("/categories/:id", controllers.UpdateCategory)
 		api.DELETE("/categories/:id", controllers.DeleteCategory)
 
-		// transactions
 		api.GET("/transactions", controllers.GetTransactions)
 		api.GET("/transactions/:id", controllers.GetTransaction)
 		api.POST("/transactions", controllers.CreateTransaction)

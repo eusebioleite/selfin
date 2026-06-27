@@ -23,10 +23,8 @@ import (
 
 func main() {
 
-	// 1. new log instance
 	logger.InitLogger()
 
-	// 2. load environment variables
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal().Msg("Error while loading .env file.")
@@ -36,11 +34,9 @@ func main() {
 		log.Fatal().Msg("Error while reading PORT environment variable.")
 	}
 
-	// 3. setup ctrl + c as shutdown
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
-	// 4. setup database
 	db, err := sql.Open("sqlite3", "file:selfin.db")
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error while trying to connect to database.")
@@ -56,10 +52,8 @@ func main() {
 
 	database.InitDB(db)
 
-	// 5. setup gin routes
 	r := routes.SetupRouter()
 
-	// 6. setup webserver
 	srv := &http.Server{
 		Addr:    port,
 		Handler: r,

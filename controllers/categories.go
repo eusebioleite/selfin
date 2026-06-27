@@ -9,7 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetCategories returns a json with categories
 func GetCategories(c *gin.Context) {
 	categories, err := repo.GetCategories()
 	if err != nil {
@@ -20,16 +19,13 @@ func GetCategories(c *gin.Context) {
 	c.JSON(http.StatusOK, categories)
 }
 
-// GetCategory returns a category by id
 func GetCategory(c *gin.Context) {
-	// 1. parses the id parameter to string
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"info": "error converting parameter to int64.", "error": err})
 		return
 	}
 
-	// 2. get category from database
 	category, err := repo.GetCategory(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -39,16 +35,13 @@ func GetCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, category)
 }
 
-// CreateCategory creates a new category.
 func CreateCategory(c *gin.Context) {
-	// 1. initializes a struct with data from payload
 	var category models.Category
 	if err := c.ShouldBindJSON(&category); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"info": "error binding payload to struct", "error": err.Error()})
 		return
 	}
 
-	// 2. creates a new category
 	err := repo.NewCategory(&category)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -58,23 +51,19 @@ func CreateCategory(c *gin.Context) {
 	c.JSON(http.StatusCreated, category)
 }
 
-// UpdateCategory updates a category.
 func UpdateCategory(c *gin.Context) {
-	// 1. parses the id parameter to string
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"info": "error converting parameter to int64.", "error": err})
 		return
 	}
 
-	// 2. initializes a struct with data from payload
 	var category models.Category
 	if err := c.ShouldBindJSON(&category); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// 3. updates a category
 	category.ID = id
 	err = repo.UpdateCategory(&category)
 	if err != nil {
@@ -86,16 +75,13 @@ func UpdateCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, category)
 }
 
-// DeleteCategory deletes a category.
 func DeleteCategory(c *gin.Context) {
-	// 1. parses the id parameter to string
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "error converting parameter to int64.", "log": err})
 		return
 	}
 
-	// 2. deletes the category
 	err = repo.DeleteCategory(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

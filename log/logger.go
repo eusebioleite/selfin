@@ -10,10 +10,8 @@ import (
 
 func InitLogger() {
 
-	// 1. setup time format
 	zerolog.TimeFieldFormat = time.RFC3339
 
-	// 2. open log file
 	file, err := os.OpenFile("selfin.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error while opening log file.")
@@ -24,7 +22,6 @@ func InitLogger() {
 		TimeFormat: time.RFC3339,
 	}
 
-	// 3. setup multilevelwriter to log on both console and stdout
 	multi := zerolog.MultiLevelWriter(consoleWriter, file)
 
 	log.Logger = zerolog.New(multi).With().Timestamp().Logger()
