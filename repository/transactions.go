@@ -12,6 +12,7 @@ import (
 )
 
 type Transaction = models.Transaction
+type TransactionView = models.TransactionView
 
 func GetTransactions() ([]Transaction, error) {
 	var transactions []Transaction
@@ -23,10 +24,10 @@ func GetTransactions() ([]Transaction, error) {
 		amount,
 		type,
 		description,
-		category_id
+		category_id,
 		user_id
 	FROM transactions
-	ORDER BY id DESC
+	ORDER BY date DESC
 	`
 	rows, err := database.DB.Query(query)
 	if err != nil {
@@ -37,12 +38,57 @@ func GetTransactions() ([]Transaction, error) {
 	for rows.Next() {
 		var t Transaction
 		if err := rows.Scan(&t.ID, &t.Date, &t.Amount, &t.Type, &t.Description, &t.CategoryID, &t.UserID); err != nil {
-			return transactions, fmt.Errorf("Error parsing users -> %w", err)
+			return transactions, fmt.Errorf("Error parsing transactions -> %w", err)
 		}
 		transactions = append(transactions, t)
 	}
 
 	return transactions, nil
+}
+
+func GetTransactionsView() ([]TransactionView, error) {
+	var transactionsView []TransactionView
+
+	query := `
+	SELECT
+		t.id,
+		t.date,
+		t.amount,
+		t.type,
+		t.description,
+		t.category_id,
+		c.description,
+		t.user_id,
+		u.name
+	FROM transactions t
+	JOIN categories c on t.category_id = c.id
+	JOIN users u on t.user_id = u.id
+	ORDER BY t.date DESC
+	`
+	rows, err := database.DB.Query(query)
+	if err != nil {
+		return transactionsView, fmt.Errorf("Error obtaining transactions view -> %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var t TransactionView
+		if err := rows.Scan(
+			&t.ID,
+			&t.Date,
+			&t.Amount,
+			&t.Type,
+			&t.Description,
+			&t.CategoryID,
+			&t.CategoryDescription,
+			&t.UserID,
+			&t.UserName); err != nil {
+			return transactionsView, fmt.Errorf("Error parsing users -> %w", err)
+		}
+		transactionsView = append(transactionsView, t)
+	}
+
+	return transactionsView, nil
 }
 
 func GetTransaction(id int64) (Transaction, error) {

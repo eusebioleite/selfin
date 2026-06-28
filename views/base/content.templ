@@ -1,7 +1,10 @@
 package base
 
 templ Content(page templ.Component) {
-    <main>
-      @page
-    </main>
+	<main class="w-full h-full">
+		<div class="h-page w-page flex flex-col bg-neutral-900 m-5 rounded-sm">
+			@page
+		</div>
+		<div id="drawer"></div>
+	</main>
 }

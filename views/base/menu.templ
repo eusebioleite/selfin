@@ -1,11 +1,49 @@
 package base
 
+import lucide "github.com/wux4an/lucide-templ/icons"
+
 templ Menu() {
-	<nav>
-		<ul>
-			<li><a href="/dashboards">Dashboard</a></li>
-			<li><a href="/categories">Categorias</a></li>
-			<li><a href="/users">Usuários</a></li>
-		</ul>
+	<nav
+		x-data="{ expanded: localStorage.getItem('sidebar') !== 'collapsed' }"
+		x-bind:class="expanded ? 'w-64' : 'w-16'"
+		class="h-screen bg-neutral-900 flex flex-col justify-between p-3 transition-all duration-300 ease-in-out select-none flex-shrink-0"
+	>
+		<div class="flex flex-col gap-6">
+			<div class="flex items-center h-10 px-2">
+				<button
+					type="button"
+					x-on:click="expanded = !expanded; localStorage.setItem('sidebar', expanded ? 'expanded' : 'collapsed')"
+					class="p-2 rounded-full hover:bg-neutral-800 text-neutral-400 hover:text-[#f8c857] cursor-pointer transition-colors"
+				>
+					@lucide.Menu(templ.Attributes{"class": "icon w-5 h-5"})
+				</button>
+			</div>
+			<ul class="flex flex-col gap-1 px-1">
+				<li>@menuLink("/dashboards", "Dashboard", lucide.LayoutDashboard(templ.Attributes{"class": "icon w-5 h-5 text-neutral-400 group-hover:text-[#f8c857] flex-shrink-0"}))</li>
+				<li>@menuLink("/transactions", "Transactions", lucide.Banknote(templ.Attributes{"class": "icon w-5 h-5 text-neutral-400 group-hover:text-[#f8c857] flex-shrink-0"}))</li>
+				<li>@menuLink("/categories", "Categorias", lucide.Folder(templ.Attributes{"class": "icon w-5 h-5 text-neutral-400 group-hover:text-[#f8c857] flex-shrink-0"}))</li>
+				<li>@menuLink("/users", "Usuários", lucide.Users(templ.Attributes{"class": "icon w-5 h-5 text-neutral-400 group-hover:text-[#f8c857] flex-shrink-0"}))</li>
+			</ul>
+		</div>
+		<div class="flex flex-col gap-1 px-1 border-t border-neutral-800/60 pt-3">
+			@menuLink("/settings", "Configurações", lucide.Settings(templ.Attributes{"class": "icon w-5 h-5 text-neutral-400 group-hover:text-[#f8c857] flex-shrink-0"}))
+		</div>
 	</nav>
+}
+
+templ menuLink(href string, label string, icon templ.Component) {
+	<a
+		href={ templ.URL(href) }
+		x-bind:class="expanded ? 'px-3 justify-start w-full' : 'justify-center w-10 h-10 mx-auto'"
+		class="flex items-center gap-4 py-2.5 rounded-sm hover:bg-neutral-800/60 group transition-all duration-200"
+	>
+		@icon
+		<span
+			x-show="expanded"
+			x-transition.opacity
+			class="text-sm font-medium text-neutral-300 group-hover:text-neutral-100 whitespace-nowrap"
+		>
+			{ label }
+		</span>
+	</a>
 }

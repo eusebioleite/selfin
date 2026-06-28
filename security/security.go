@@ -21,6 +21,7 @@ import (
 )
 
 type Session = models.Session
+type User = models.User
 type UserSession = models.UserSession
 
 func Auth(login string, password string) (int64, error) {
@@ -227,4 +228,45 @@ func comparePassword(storedHash, password string) error {
 	}
 
 	return errors.New("hashes don't match.")
+}
+
+func ResetPassword(password string) error {
+	user := User{
+		ID: 1,
+	}
+
+	hash, err := HashPassword(password)
+	if err != nil {
+		return fmt.Errorf("Error reseting password -> %w", err)
+	}
+
+	user.Password = hash
+	err = repo.UpdateUser(&user)
+	if err != nil {
+		return fmt.Errorf("Error reseting password -> %w", err)
+	}
+
+	err = DeleteSession(user.ID)
+	if err != nil {
+		return fmt.Errorf("Error reseting password -> %w", err)
+	}
+
+	return nil
+}
+
+func DeleteSession(id int64) error {
+	if id == 0 {
+		return errors.New("no ID was provided")
+	}
+
+	query := `
+	DELETE FROM sessions
+	WHERE user_id = ?
+	`
+	_, err := database.DB.Exec(query, id)
+	if err != nil {
+		return fmt.Errorf("Error deleting user sessions -> %w", err)
+	}
+
+	return nil
 }

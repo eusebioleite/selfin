@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	_ "embed"
 	"errors"
+	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -15,6 +16,7 @@ import (
 	"github.com/eusebioleite/selfin/database"
 	logger "github.com/eusebioleite/selfin/log"
 	"github.com/eusebioleite/selfin/routes"
+	"github.com/eusebioleite/selfin/security"
 	_ "github.com/eusebioleite/selfin/views"
 	"github.com/joho/godotenv"
 	_ "github.com/ncruces/go-sqlite3/driver"
@@ -29,6 +31,35 @@ func main() {
 	if err != nil {
 		log.Fatal().Msg("Error while loading .env file.")
 	}
+
+	if len(os.Args) > 1 {
+
+		if os.Args[1] != "-password" {
+			log.Fatal().Msg("Usage: ./selfin.exe -password <new_password>")
+		}
+
+		passwordPtr := flag.String("password", "", "Set new admin password")
+		flag.Parse()
+		if *passwordPtr != "" {
+			db, err := sql.Open("sqlite3", "file:selfin.db")
+			if err != nil {
+				log.Fatal().Err(err).Msg("Error while trying to connect to database.")
+			}
+
+			database.InitDB(db)
+
+			err = security.ResetPassword(*passwordPtr)
+			if err != nil {
+				db.Close()
+				log.Fatal().Err(err).Msg("Error resetting password.")
+			}
+
+			log.Info().Msg("Password successfully reset.")
+			db.Close()
+		}
+		os.Exit(0)
+	}
+
 	port := ":" + os.Getenv("PORT")
 	if port == ":" {
 		log.Fatal().Msg("Error while reading PORT environment variable.")

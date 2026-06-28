@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/eusebioleite/selfin/models"
 	"github.com/eusebioleite/selfin/views/base"
+	lucide "github.com/wux4an/lucide-templ/icons"
 )
 
 templ Users(users []models.User) {
@@ -11,20 +12,123 @@ templ Users(users []models.User) {
 }
 
 templ usersContent(users []models.User) {
-	<table id="tableUsers">
-		<thead id="theadUsers">
-			<tr>
-				<th id="thID">ID</th>
-				<th id="thNome">Name</th>
-			</tr>
-		</thead>
-		<tbody id="tbodyUsers">
-			for i, user := range users {
-				<tr id={ fmt.Sprintf("tr%d", i) }>
-					<td id="tdID">{ user.ID }</td>
-					<td id="tdName">{ user.Name }</td>
-				</tr>
-			}
-		</tbody>
-	</table>
+	<div class="flex flex-col w-full max-w-5xl mx-auto p-6 animate-fade-in">
+		<div class="mb-8 flex justify-between items-center border-b border-neutral-800 pb-5">
+			<div>
+				<h2 class="text-2xl font-bold tracking-tight text-neutral-50">Users</h2>
+				<p class="text-xs text-neutral-400 mt-1">Gerencie os usuários com acesso ao sistema.</p>
+			</div>
+			<button
+				type="button"
+				hx-get="/users/new"
+				hx-target="#modal-content"
+				hx-swap="innerHTML"
+				class="inline-flex h-10 px-4 items-center justify-center gap-2 rounded-sm bg-[#f8c857] text-neutral-950 font-semibold text-sm shadow-md hover:bg-[#e0b44c] active:scale-[0.98] transition-all duration-150 cursor-pointer"
+				id="btnNew"
+			>
+				@lucide.Plus(templ.Attributes{"class": "w-4 h-4"})
+				<span>New User</span>
+			</button>
+		</div>
+		<div class="overflow-hidden rounded-sm border border-neutral-800/80 bg-neutral-950/40 backdrop-blur-md shadow-inner">
+			<table id="tableUsers" class="w-full text-sm text-left border-collapse">
+				<thead>
+					<tr class="bg-neutral-950/80 border-b border-neutral-800 text-xs font-semibold uppercase tracking-wider text-neutral-300">
+						<th class="px-6 py-4 w-24">ID</th>
+						<th class="px-6 py-4">Name</th>
+						<th class="px-6 py-4">Login</th>
+						<th class="px-6 py-4 text-right pr-8">Actions</th>
+					</tr>
+				</thead>
+				<tbody id="tbodyUsers" class="divide-y divide-neutral-800/50">
+					if len(users) == 0 {
+						<tr>
+							<td colspan="4" class="px-6 py-12 text-center text-neutral-400 italic bg-neutral-900/10">
+								Nenhum usuário registrado no sistema.
+							</td>
+						</tr>
+					}
+					for i, user := range users {
+						<tr id={ fmt.Sprintf("tr-user-%d", i) } class="hover:bg-neutral-800/40 transition-colors duration-150 group">
+							<td class="px-6 py-4 font-mono text-xs text-neutral-400 font-medium">{ user.ID }</td>
+							<td class="px-6 py-4 font-medium text-neutral-100">{ user.Name }</td>
+							<td class="px-6 py-4 text-neutral-300">{ user.Login }</td>
+							<td class="px-6 py-4 text-right pr-8">
+								<div class="inline-flex items-center gap-1 opacity-90 group-hover:opacity-100 transition-opacity">
+									<button
+										type="button"
+										class="p-2 rounded-sm hover:bg-neutral-800 text-neutral-400 hover:text-[#f8c857] transition-colors duration-150"
+										title="Edit"
+									>
+										@lucide.Pencil(templ.Attributes{"class": "w-4 h-4"})
+									</button>
+									<button
+										type="button"
+										class="p-2 rounded-sm hover:bg-red-950/40 text-neutral-400 hover:text-red-400 transition-colors duration-150"
+										title="Delete"
+									>
+										@lucide.Trash2(templ.Attributes{"class": "w-4 h-4"})
+									</button>
+								</div>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+}
+
+templ UserModal() {
+	<form
+		class="w-full text-left antialiased animate-scale-in"
+		hx-post="/users"
+		hx-ext="json-enc"
+		id="formUser"
+	>
+		<div class="mb-6">
+			<h3 class="text-xl font-bold text-neutral-100">Create User</h3>
+			<p class="text-xs text-neutral-400 mt-1">Adicione um novo usuário ao sistema.</p>
+		</div>
+		<div class="w-full mb-4">
+			<label for="tbName" class="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">
+				Name
+			</label>
+			<input
+				type="text"
+				name="name"
+				id="tbName"
+				required
+				placeholder="e.g., John Doe"
+				class="w-full text-sm bg-neutral-950 text-neutral-100 px-3.5 py-2.5 border border-neutral-800 rounded-sm focus:outline-none focus:border-neutral-700 focus:ring-1 focus:ring-neutral-700 transition-all placeholder-neutral-600"
+			/>
+		</div>
+		<div class="w-full mb-4">
+			<label for="tbLogin" class="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">
+				Login
+			</label>
+			<input
+				type="text"
+				name="login"
+				id="tbLogin"
+				required
+				placeholder="e.g., jdoe"
+				class="w-full text-sm bg-neutral-950 text-neutral-100 px-3.5 py-2.5 border border-neutral-800 rounded-sm focus:outline-none focus:border-neutral-700 focus:ring-1 focus:ring-neutral-700 transition-all placeholder-neutral-600"
+			/>
+		</div>
+		<div class="w-full mb-6">
+			<label for="tbPassword" class="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">
+				Password
+			</label>
+			<input
+				type="password"
+				name="password"
+				id="tbPassword"
+				required
+				autocomplete="new-password"
+				class="w-full text-sm bg-neutral-950 text-neutral-100 px-3.5 py-2.5 border border-neutral-800 rounded-sm focus:outline-none focus:border-neutral-700 focus:ring-1 focus:ring-neutral-700 transition-all placeholder-neutral-600"
+			/>
+		</div>
+		@base.ModalActions()
+	</form>
 }

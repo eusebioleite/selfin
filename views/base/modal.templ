@@ -1,0 +1,19 @@
+package base
+
+templ ModalActions() {
+	<div class="flex items-center gap-3 w-full mt-4">
+		<button
+			type="button"
+			x-on:click="$dispatch('close-modal')"
+			class="w-1/2 text-sm font-medium text-neutral-400 py-2.5 bg-neutral-800 hover:bg-neutral-700 hover:text-neutral-200 rounded-sm transition-all duration-150 cursor-pointer text-center"
+		>
+			Cancel
+		</button>
+		<button
+			type="submit"
+			class="w-1/2 text-sm font-semibold text-neutral-950 py-2.5 bg-[#f8c857] hover:bg-[#e0b44c] active:scale-[0.98] rounded-sm transition-all duration-150 cursor-pointer shadow-md shadow-[#f8c857]/10"
+		>
+			Save
+		</button>
+	</div>
+}

@@ -1,0 +1,181 @@
+package views
+
+import (
+	"fmt"
+	"github.com/eusebioleite/selfin/models"
+	"github.com/eusebioleite/selfin/views/base"
+	lucide "github.com/wux4an/lucide-templ/icons"
+)
+
+templ Transactions(transactions []models.TransactionView) {
+	@base.App(base.Content(transactionsContent(transactions)))
+}
+
+templ transactionsContent(transactions []models.TransactionView) {
+	<div class="flex flex-col w-full max-w-7xl mx-auto p-6 animate-fade-in">
+		<div class="mb-8 flex justify-between items-center border-b border-neutral-800 pb-5">
+			<div>
+				<h2 class="text-2xl font-bold tracking-tight text-neutral-50">Transactions</h2>
+				<p class="text-xs text-neutral-400 mt-1">Visualize e gerencie as movimentações financeiras.</p>
+			</div>
+			<button
+				type="button"
+				hx-get="/transactions/new"
+				hx-target="#modal-content"
+				hx-swap="innerHTML"
+				class="inline-flex h-10 px-4 items-center justify-center gap-2 rounded-sm bg-[#f8c857] text-neutral-950 font-semibold text-sm shadow-md hover:bg-[#e0b44c] active:scale-[0.98] transition-all duration-150 cursor-pointer"
+				id="btnNew"
+			>
+				@lucide.Plus(templ.Attributes{"class": "w-4 h-4"})
+				<span>New Transaction</span>
+			</button>
+		</div>
+		<div class="overflow-x-auto overflow-hidden rounded-sm border border-neutral-800/80 bg-neutral-950/40 backdrop-blur-md shadow-inner">
+			<table id="tableTransactions" class="w-full text-sm text-left border-collapse">
+				<thead>
+					<tr class="bg-neutral-950/80 border-b border-neutral-800 text-xs font-semibold uppercase tracking-wider text-neutral-300">
+						<th class="px-6 py-4 w-24">ID</th>
+						<th class="px-6 py-4 whitespace-nowrap">Date</th>
+						<th class="px-6 py-4">Description</th>
+						<th class="px-6 py-4 text-right whitespace-nowrap">Amount</th>
+						<th class="px-6 py-4 whitespace-nowrap">Type</th>
+						<th class="px-6 py-4 whitespace-nowrap">Category</th>
+						<th class="px-6 py-4 whitespace-nowrap">User</th>
+						<th class="px-6 py-4 text-right pr-8 whitespace-nowrap">Actions</th>
+					</tr>
+				</thead>
+				<tbody id="tbodyTransactions" class="divide-y divide-neutral-800/50">
+					if len(transactions) == 0 {
+						<tr>
+							<td colspan="8" class="px-6 py-12 text-center text-neutral-400 italic bg-neutral-900/10">
+								Nenhuma transação registrada no sistema.
+							</td>
+						</tr>
+					}
+					for i, transaction := range transactions {
+						<tr id={ fmt.Sprintf("tr-txn-%d", i) } class="hover:bg-neutral-800/40 transition-colors duration-150 group">
+							<td class="px-6 py-4 font-mono text-xs text-neutral-400 font-medium">{ transaction.ID }</td>
+							<td class="px-6 py-4 text-neutral-300 whitespace-nowrap">{ transaction.Date }</td>
+							<td class="px-6 py-4 font-medium text-neutral-100">{ transaction.Description }</td>
+							<td class="px-6 py-4 text-right font-mono text-neutral-100 whitespace-nowrap">{ fmt.Sprintf("%.2f", transaction.Amount) }</td>
+							<td class="px-6 py-4 text-neutral-300 whitespace-nowrap">{ transaction.Type }</td>
+							<td class="px-6 py-4 text-neutral-300 whitespace-nowrap">{ transaction.CategoryDescription }</td>
+							<td class="px-6 py-4 text-neutral-300 whitespace-nowrap">{ transaction.UserName }</td>
+							<td class="px-6 py-4 text-right pr-8">
+								<div class="inline-flex items-center gap-1 opacity-90 group-hover:opacity-100 transition-opacity">
+									<button
+										type="button"
+										class="p-2 rounded-sm hover:bg-neutral-800 text-neutral-400 hover:text-[#f8c857] transition-colors duration-150"
+										title="Edit"
+									>
+										@lucide.Pencil(templ.Attributes{"class": "w-4 h-4"})
+									</button>
+									<button
+										type="button"
+										class="p-2 rounded-sm hover:bg-red-950/40 text-neutral-400 hover:text-red-400 transition-colors duration-150"
+										title="Delete"
+									>
+										@lucide.Trash2(templ.Attributes{"class": "w-4 h-4"})
+									</button>
+								</div>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+}
+
+func categoryOptions(categories []models.Category) []base.ComboboxOption {
+	opts := make([]base.ComboboxOption, len(categories))
+	for i, c := range categories {
+		opts[i] = base.ComboboxOption{Value: fmt.Sprintf("%d", c.ID), Label: c.Description}
+	}
+	return opts
+}
+
+func userOptions(users []models.User) []base.ComboboxOption {
+	opts := make([]base.ComboboxOption, len(users))
+	for i, u := range users {
+		opts[i] = base.ComboboxOption{Value: fmt.Sprintf("%d", u.ID), Label: u.Name}
+	}
+	return opts
+}
+
+templ TransactionModal(categories []models.Category, users []models.User) {
+	<form
+		class="w-full text-left antialiased animate-scale-in"
+		hx-post="/transactions"
+		hx-ext="json-enc"
+		id="formTransaction"
+	>
+		<div class="mb-6">
+			<h3 class="text-xl font-bold text-neutral-100">Create Transaction</h3>
+			<p class="text-xs text-neutral-400 mt-1">Registre uma nova movimentação financeira.</p>
+		</div>
+		<div class="grid grid-cols-2 gap-4 mb-4">
+			<div>
+				<label for="tbDate" class="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">
+					Date
+				</label>
+				<input
+					type="text"
+					name="date"
+					id="tbDate"
+					required
+					placeholder="DD/MM/YYYY"
+					class="w-full text-sm bg-neutral-950 text-neutral-100 px-3.5 py-2.5 border border-neutral-800 rounded-sm focus:outline-none focus:border-neutral-700 focus:ring-1 focus:ring-neutral-700 transition-all placeholder-neutral-600"
+				/>
+			</div>
+			<div>
+				<label for="tbAmount" class="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">
+					Amount
+				</label>
+				<input
+					type="number"
+					name="amount"
+					id="tbAmount"
+					required
+					min="0"
+					step="1"
+					class="w-full text-sm bg-neutral-950 text-neutral-100 px-3.5 py-2.5 border border-neutral-800 rounded-sm focus:outline-none focus:border-neutral-700 focus:ring-1 focus:ring-neutral-700 transition-all placeholder-neutral-600"
+				/>
+			</div>
+		</div>
+		<div class="w-full mb-4">
+			<label for="tbDescription" class="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">
+				Description
+			</label>
+			<input
+				type="text"
+				name="description"
+				id="tbDescription"
+				required
+				placeholder="Transaction description"
+				class="w-full text-sm bg-neutral-950 text-neutral-100 px-3.5 py-2.5 border border-neutral-800 rounded-sm focus:outline-none focus:border-neutral-700 focus:ring-1 focus:ring-neutral-700 transition-all placeholder-neutral-600"
+			/>
+		</div>
+		<div class="grid grid-cols-3 gap-4 mb-6">
+			<div>
+				<label class="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">
+					Type
+				</label>
+				@base.Combobox("type", "type", []base.ComboboxOption{{Value: "Despesa", Label: "Despesa"}, {Value: "Receita", Label: "Receita"}}, "Despesa")
+			</div>
+			<div>
+				<label class="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">
+					Category
+				</label>
+				@base.Combobox("category_id", "category", categoryOptions(categories), "")
+			</div>
+			<div>
+				<label class="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">
+					User
+				</label>
+				@base.Combobox("user_id", "user", userOptions(users), "")
+			</div>
+		</div>
+		@base.ModalActions()
+	</form>
+}

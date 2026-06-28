@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"github.com/eusebioleite/selfin/models"
 	"github.com/eusebioleite/selfin/views/base"
+	lucide "github.com/wux4an/lucide-templ/icons"
 )
 
 func Categories(categories []models.Category) templ.Component {
@@ -64,56 +65,123 @@ func categoriesContent(categories []models.Category) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<table id=\"tableCategories\"><thead id=\"theadCategories\"><tr><th id=\"thID\">ID</th><th id=\"thDescription\">Description</th></tr></thead> <tbody id=\"tbodyCategories\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"flex flex-col w-full max-w-5xl mx-auto p-6 animate-fade-in\"><div class=\"mb-8 flex justify-between items-center border-b border-neutral-800 pb-5\"><div><h2 class=\"text-2xl font-bold tracking-tight text-neutral-50\">Categories</h2><p class=\"text-xs text-neutral-400 mt-1\">Gerencie os escopos e indexadores do sistema.</p></div><button type=\"button\" hx-get=\"/categories/new\" hx-target=\"#modal-content\" hx-swap=\"innerHTML\" class=\"inline-flex h-10 px-4 items-center justify-center gap-2 rounded-sm bg-[#f8c857] text-neutral-950 font-semibold text-sm shadow-md hover:bg-[#e0b44c] active:scale-[0.98] transition-all duration-150 cursor-pointer\" id=\"btnNew\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
+		templ_7745c5c3_Err = lucide.Plus(templ.Attributes{"class": "w-4 h-4"}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<span>New Category</span></button></div><div class=\"overflow-hidden rounded-sm border border-neutral-800/80 bg-neutral-950/40 backdrop-blur-md shadow-inner\"><table id=\"tableCategories\" class=\"w-full text-sm text-left border-collapse\"><thead><tr class=\"bg-neutral-950/80 border-b border-neutral-800 text-xs font-semibold uppercase tracking-wider text-neutral-300\"><th class=\"px-6 py-4 w-24\">ID</th><th class=\"px-6 py-4\">Description</th><th class=\"px-6 py-4 text-right pr-8\">Actions</th></tr></thead> <tbody id=\"tbodyCategories\" class=\"divide-y divide-neutral-800/50\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if len(categories) == 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<tr><td colspan=\"3\" class=\"px-6 py-12 text-center text-neutral-400 italic bg-neutral-900/10\">Nenhuma categoria registrada na rede.</td></tr>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
 		for i, category := range categories {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<tr id=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<tr id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
-			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("tr%d", i))
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("tr-cat-%d", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/categories.templ`, Line: 23, Col: 35}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/categories.templ`, Line: 51, Col: 42}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><td id=\"tdID\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\" class=\"hover:bg-neutral-800/40 transition-colors duration-150 group\"><td class=\"px-6 py-4 font-mono text-xs text-neutral-400 font-medium\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(category.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/categories.templ`, Line: 24, Col: 32}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/categories.templ`, Line: 52, Col: 89}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</td><td id=\"tdDescription\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</td><td class=\"px-6 py-4 font-medium text-neutral-100\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(category.Description)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/categories.templ`, Line: 25, Col: 50}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/categories.templ`, Line: 53, Col: 80}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</td></tr>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</td><td class=\"px-6 py-4 text-right pr-8\"><div class=\"inline-flex items-center gap-1 opacity-90 group-hover:opacity-100 transition-opacity\"><button type=\"button\" class=\"p-2 rounded-sm hover:bg-neutral-800 text-neutral-400 hover:text-[#f8c857] transition-colors duration-150\" title=\"Edit\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = lucide.Pencil(templ.Attributes{"class": "w-4 h-4"}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</button> <button type=\"button\" class=\"p-2 rounded-sm hover:bg-red-950/40 text-neutral-400 hover:text-red-400 transition-colors duration-150\" title=\"Delete\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = lucide.Trash2(templ.Attributes{"class": "w-4 h-4"}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</button></div></td></tr>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</tbody></table>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</tbody></table></div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func CategoryModal() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var6 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var6 == nil {
+			templ_7745c5c3_Var6 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<form class=\"w-full text-left antialiased animate-scale-in\" hx-post=\"/categories\" hx-ext=\"json-enc\" id=\"formCategory\"><div class=\"mb-6\"><h3 class=\"text-xl font-bold text-neutral-100\">Create Category</h3><p class=\"text-xs text-neutral-400 mt-1\">Adicione um novo rótulo de indexação ao sistema.</p></div><div class=\"w-full mb-6\"><label for=\"tbDescription\" class=\"block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2\">Description</label> <input type=\"text\" name=\"description\" id=\"tbDescription\" required placeholder=\"e.g., Electronics, Infrastructure...\" class=\"w-full text-sm bg-neutral-950 text-neutral-100 px-3.5 py-2.5 border border-neutral-800 rounded-sm focus:outline-none focus:border-neutral-700 focus:ring-1 focus:ring-neutral-700 transition-all placeholder-neutral-600\"></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = base.ModalActions().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -1,0 +1,116 @@
+package base
+
+import (
+	"fmt"
+	lucide "github.com/wux4an/lucide-templ/icons"
+)
+
+type ComboboxOption struct {
+	Value string
+	Label string
+}
+
+// Combobox renders a customizable, searchable selection menu that fits perfectly with the project's design language.
+templ Combobox(name string, placeholder string, options []ComboboxOption, defaultValue string) {
+	<div
+		class="relative w-full text-left select-none"
+		x-data={ fmt.Sprintf(`{
+			open: false,
+			search: '',
+			value: '%s',
+			label: '',
+			options: [
+				%s
+			],
+			init() {
+				const initial = this.options.find(o => o.value === this.value);
+				if (initial) this.label = initial.label;
+			},
+			selectOption(opt) {
+				this.value = opt.value;
+				this.label = opt.label;
+				this.open = false;
+				this.search = '';
+			}
+		}`, defaultValue, buildJsOptions(options)) }
+		x-on:click.outside="open = false"
+		x-on:keydown.escape.window="open = false"
+	>
+		<!-- Hidden input for standard form submission -->
+		<input type="hidden" name={ name } x-model="value" />
+
+		<!-- Trigger Button -->
+		<button
+			type="button"
+			x-on:click="open = !open; if(open) { $nextTick(() => $refs.searchInput.focus()) }"
+			class="w-full inline-flex items-center justify-between text-sm bg-neutral-950 text-neutral-100 px-3.5 py-2.5 border border-neutral-800 rounded-sm focus:outline-none focus:border-neutral-700 focus:ring-1 focus:ring-neutral-700 transition-all text-left cursor-pointer"
+			x-bind:aria-expanded="open"
+		>
+			<span x-text="label || 'Select option...'" class="block truncate" x-bind:class="!label ? 'text-neutral-600' : ''"></span>
+			<span class="text-neutral-500 transition-transform duration-200" x-bind:class="open ? 'rotate-180 text-[#f8c857]' : ''">
+				@lucide.ChevronsUpDown(templ.Attributes{"class": "w-4.5 h-4.5"})
+			</span>
+		</button>
+
+		<!-- Dropdown List Container -->
+		<div
+			x-show="open"
+			x-transition:enter="transition ease-out duration-100"
+			x-transition:enter-start="transform opacity-0 scale-95"
+			x-transition:enter-end="transform opacity-100 scale-100"
+			x-transition:leave="transition ease-in duration-75"
+			x-transition:leave-start="transform opacity-100 scale-100"
+			x-transition:leave-end="transform opacity-0 scale-95"
+			class="absolute z-50 mt-1.5 w-full bg-neutral-900 border border-neutral-800 rounded-sm shadow-xl shadow-black/80 overflow-hidden"
+			style="display: none;"
+		>
+			<!-- Search Input Box -->
+			<div class="p-2 border-b border-neutral-800/80 bg-neutral-950/60 flex items-center gap-2">
+				<div class="relative w-full flex items-center text-neutral-400">
+					<div class="absolute left-2.5 pointer-events-none">
+						@lucide.Search(templ.Attributes{"class": "w-3.5 h-3.5 text-neutral-500"})
+					</div>
+					<input
+						x-ref="searchInput"
+						x-model="search"
+						type="text"
+						placeholder={ fmt.Sprintf("Search %s...", placeholder) }
+						class="w-full text-xs bg-neutral-950 text-neutral-100 pl-8 pr-3 py-1.5 border border-neutral-800 rounded-sm focus:outline-none focus:border-neutral-700 focus:ring-1 focus:ring-neutral-700 transition-all placeholder-neutral-600"
+					/>
+				</div>
+			</div>
+
+			<!-- Options List -->
+			<ul class="max-h-60 overflow-y-auto py-1 divide-y divide-neutral-800/30 text-xs scrollbar-thin scrollbar-thumb-neutral-800">
+				<template x-for="opt in options" :key="opt.value">
+					<li
+						x-show="search === '' || opt.label.toLowerCase().includes(search.toLowerCase())"
+						x-on:click="selectOption(opt)"
+						class="px-3.5 py-2.5 hover:bg-neutral-800 hover:text-neutral-100 cursor-pointer transition-colors flex items-center justify-between"
+						x-bind:class="value === opt.value ? 'bg-[#f8c857]/10 text-[#f8c857] font-semibold' : 'text-neutral-300'"
+					>
+						<span x-text="opt.label"></span>
+						<span x-show="value === opt.value" class="text-[#f8c857]">
+							@lucide.Check(templ.Attributes{"class": "w-3.5 h-3.5"})
+						</span>
+					</li>
+				</template>
+				<!-- Empty Search State -->
+				<li
+					x-show="options.filter(o => o.label.toLowerCase().includes(search.toLowerCase())).length === 0"
+					class="px-3.5 py-4 text-center text-neutral-500 italic"
+				>
+					No results found
+				</li>
+			</ul>
+		</div>
+	</div>
+}
+
+func buildJsOptions(options []ComboboxOption) string {
+	var result string
+	for _, opt := range options {
+		result += fmt.Sprintf("{value: `%s`, label: `%s`},", opt.Value, opt.Label)
+	}
+	return result
+}

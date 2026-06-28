@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #f8c857;
+  --color-accent: #f8c857;
 }
 
 @source "./views/**/*.templ";
@@ -13,4 +13,25 @@
   src: url("/resources/fonts/inter.woff2") format("woff2");
   font-weight: 100 900;
   font-display: swap;
+}
+
+@layer utilities {
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px; /* Largura da barra vertical */
+    height: 8px; /* Altura da barra horizontal */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0a0a0a; /* Cor do fundo (neutral-950) */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #262626; /* Cor da barra em si (neutral-800) */
+    border-radius: 9999px; /* Deixa arredondada */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #404040; /* Cor quando passa o mouse (neutral-100/hover) */
+  }
 }

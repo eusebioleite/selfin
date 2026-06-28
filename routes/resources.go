@@ -12,7 +12,8 @@ func setupResources(r *gin.Engine) {
 	resource := r.Group("/resources")
 	{
 		resource.GET("/htmx.min.js", js.GetHtmx)
-		resource.GET("/json-enc.js", js.GetJsonEncJS)
+		resource.GET("/json-enc.js", js.GetJsonEnc)
+		resource.GET("/alpine.min.js", js.GetAlpine)
 		resource.GET("/fonts/inter.woff2", fonts.GetFontInter)
 		resource.GET("/styles/main.css", styles.GetCss)
 		resource.GET("/img/output.png", img.GetLogo)

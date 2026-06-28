@@ -26,7 +26,11 @@ func setupPages(r *gin.Engine) {
 	protected.Use(security.AuthMiddleware())
 	{
 		protected.GET("/dashboards", pages.GetDashboards)
+		protected.GET("/transactions", pages.GetTransactions)
+		protected.GET("/transactions/new", pages.GetTransactionsModal)
 		protected.GET("/categories", pages.GetCategories)
+		protected.GET("/categories/new", pages.GetCategoriesModal)
 		protected.GET("/users", pages.GetUsers)
+		protected.GET("/users/new", pages.GetUsersModal)
 	}
 }

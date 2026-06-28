@@ -29,7 +29,7 @@ func App(content templ.Component) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html><head title=\"Selfin\"><script src=\"/resources/htmx.min.js\"></script><script src=\"/resources/json-enc.js\"></script><link rel=\"stylesheet\" href=\"/resources/styles/main.css\"></head><body><div style=\"display: flex;\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html><head title=\"Selfin\"><script>\r\n\t\t\t\tdocument.addEventListener('alpine:init', () => {\r\n\t\t\t\t\tAlpine.data('appShell', () => ({\r\n\t\t\t\t\t\tmodalOpen: false,\r\n\t\t\t\t\t\topenModal() {\r\n\t\t\t\t\t\t\tthis.modalOpen = true;\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\tcloseModal() {\r\n\t\t\t\t\t\t\tthis.modalOpen = false;\r\n\t\t\t\t\t\t\tsetTimeout(() => {\r\n\t\t\t\t\t\t\t\tif (!this.modalOpen) {\r\n\t\t\t\t\t\t\t\t\tconst content = document.getElementById('modal-content');\r\n\t\t\t\t\t\t\t\t\tif (content) content.innerHTML = '';\r\n\t\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t\t}, 300);\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t}));\r\n\t\t\t\t});\r\n\r\n\t\t\tdocument.addEventListener('htmx:afterSwap', (e) => {\r\n\t\t\t\t\tif (e.detail.target.id === 'modal-content') {\r\n\t\t\t\t\t\tAlpine.initTree(e.detail.target);\r\n\t\t\t\t\t\twindow.dispatchEvent(new CustomEvent('open-modal'));\r\n\t\t\t\t\t}\r\n\t\t\t\t});\r\n\r\n\t\t\t\tdocument.addEventListener('htmx:afterRequest', (e) => {\r\n\t\t\t\t\tif (e.detail.successful && e.detail.elt.closest('#modal-content form')) {\r\n\t\t\t\t\t\twindow.dispatchEvent(new CustomEvent('close-modal'));\r\n\t\t\t\t\t}\r\n\t\t\t\t});\r\n\r\n\t\t\t</script><script src=\"/resources/htmx.min.js\"></script><script src=\"/resources/alpine.min.js\"></script><script src=\"/resources/json-enc.js\"></script><link rel=\"stylesheet\" href=\"/resources/styles/main.css\"></head><body class=\"w-screen h-screen bg-neutral-950\" x-data=\"appShell()\" x-on:keydown.escape.window=\"closeModal()\" x-on:open-modal.window=\"openModal()\" x-on:close-modal.window=\"closeModal()\"><div class=\"h-full flex flex-row\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -37,11 +37,15 @@ func App(content templ.Component) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<main class=\"flex-1 h-full overflow-y-auto\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		templ_7745c5c3_Err = content.Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</main></div><div x-show=\"modalOpen\" class=\"fixed inset-0 z-50 flex items-center justify-center\" style=\"display: none;\"><div class=\"absolute inset-0 bg-black/70\" x-show=\"modalOpen\" x-transition:enter=\"transition-opacity ease-out duration-300\" x-transition:enter-start=\"opacity-0\" x-transition:enter-end=\"opacity-100\" x-transition:leave=\"transition-opacity ease-in duration-300\" x-transition:leave-start=\"opacity-100\" x-transition:leave-end=\"opacity-0\" x-on:click=\"closeModal()\"></div><div id=\"modal-content\" x-show=\"modalOpen\" x-transition:enter=\"transition-all ease-out duration-300\" x-transition:enter-start=\"opacity-0 scale-95\" x-transition:enter-end=\"opacity-100 scale-100\" x-transition:leave=\"transition-all ease-in duration-300\" x-transition:leave-start=\"opacity-100 scale-100\" x-transition:leave-end=\"opacity-0 scale-95\" x-on:click.stop class=\"relative bg-neutral-900 border border-neutral-800 w-full max-w-2xl p-6 rounded-sm shadow-2xl z-10\"></div></div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

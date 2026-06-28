@@ -22,6 +22,18 @@ type Transaction struct {
 	UserID      int64   `json:"user_id"`
 }
 
+type TransactionView struct {
+	ID                  int64   `json:"id"`
+	Date                string  `json:"date"`
+	Amount              float64 `json:"amount"`
+	Description         string  `json:"description"`
+	Type                string  `json:"type"`
+	CategoryID          int64   `json:"category_id"`
+	CategoryDescription string  `json:"category_description"`
+	UserID              int64   `json:"user_id"`
+	UserName            string  `json:"user_name"`
+}
+
 type Session struct {
 	ID        string `json:"id"`
 	UserID    int64  `json:"user_id"`

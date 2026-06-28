@@ -18,3 +18,8 @@ func GetCategories(c *gin.Context) {
 	}
 	views.Categories(categories).Render(c.Request.Context(), c.Writer)
 }
+
+func GetCategoriesModal(c *gin.Context) {
+	c.Header("Content-Type", "text/html; charset=utf-8")
+	views.CategoryModal().Render(c.Request.Context(), c.Writer)
+}
